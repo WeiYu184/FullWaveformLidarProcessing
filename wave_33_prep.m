@@ -1,25 +1,28 @@
-% ²¨ĞÎÔ¤´¦Àí£ºÁ¿»¯µ½0-255 800¸ö²ÉÑùµã*871
-% piexlÎª¸÷¸ö×ø±êµãµÄÊı¾İÖµ£¨½«Æä×ª»»µ½0µ½255Ö®¼ä£©
-rec11=xlsread('rec11.xlsx');
-rmax=255;% Òª¹éÒ»µÄ·¶Î§µÄ×î´óÖµ
-rmin=0;% Òª¹éÒ»µÄ·¶Î§µÄ×îĞ¡Öµ
-r11max=max(max(rec11));% ËùÓĞÊı¾İÖĞ×î´óµÄ
-r11min=min(min(rec11));% ËùÓĞÊı¾İÖĞ×îĞ¡µÄ
-rec11_255=zeros(800,871);
+% æ³¢å½¢é¢„å¤„ç†ï¼šé‡åŒ–åˆ°0-255 800ä¸ªé‡‡æ ·ç‚¹*871
 
-for j=1:871
-    for i=1:800
-        rec11_255(i,j) = round((rmax-rmin)*(rec11(i,j)-r11min)/(r11max-r11min) + rmin); %¹éÒ»»¯²¢È¡Õû
+% piexlä¸ºå„ä¸ªåæ ‡ç‚¹çš„æ•°æ®å€¼ï¼ˆå°†å…¶è½¬æ¢åˆ°0åˆ°255ä¹‹é—´ï¼‰
+
+rec11=xlsread('rec11.xlsx');
+rmax=255;% è¦å½’ä¸€çš„èŒƒå›´çš„æœ€å¤§å€¼
+rmin=0;% è¦å½’ä¸€çš„èŒƒå›´çš„æœ€å°å€¼
+r11max=max(max(rec11));% æ‰€æœ‰æ•°æ®ä¸­æœ€å¤§çš„
+r11min=min(min(rec11));% æ‰€æœ‰æ•°æ®ä¸­æœ€å°çš„
+rec11_255=zeros(n_v,n_waveform);
+
+for j=1:n_waveform
+    for i=1:n_v
+        rec11_255(i,j) = round((rmax-rmin)*(rec11(i,j)-r11min)/(r11max-r11min) + rmin); %å½’ä¸€åŒ–å¹¶å–æ•´
     end
 end
 
 xlswrite('rec11_255.xlsx',rec11_255);
 
-% look-up table.xlsxµçÑ¹Öµ×ª»»
+% look-up table ç”µå‹å€¼è½¬æ¢
+
 vtable=xlsread('E:\wave33\prepare\look-up table.xlsx');
-rec11_v=zeros(800,871);
-for j=1:871
-    for i=1:800
+rec11_v=zeros(n_v,n_waveform);
+for j=1:n_waveform
+    for i=1:n_v
         v_count=rec11_255(i,j)+1;
         rec11_v(i,j)=vtable(v_count);
     end
