@@ -1,10 +1,10 @@
 % Waveform normalisation
 rec11_v=xlsread('rec11_v.xlsx');
-vsum=sum(rec11_v); % ²¨ĞÎ¸÷²ÉÑùµãµÄµçÑ¹ÖµÖ®ºÍ
-r11v_normal=zeros(800,871); % ²¨ĞÎ¹éÒ»»¯ºóµÄµçÑ¹Öµ
+vsum=sum(rec11_v); % æ³¢å½¢å„é‡‡æ ·ç‚¹çš„ç”µå‹å€¼ä¹‹å’Œ
+r11v_normal=zeros(n_v,n_waveform); % æ³¢å½¢å½’ä¸€åŒ–åçš„ç”µå‹å€¼
 
-for j=1:871 % for each waveform
-    for i=1:800 % for each sample point
+for j=1:n_waveform % for each waveform
+    for i=1:n_v % for each sample point
         r11v_normal(i,j)=rec11_v(i,j)/abs(vsum(j));
     end
 end
