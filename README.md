@@ -13,7 +13,7 @@ bgnoise.m - removing the background noise by empirical threshold method
 
 transmit_processing.m - transmit waveform processing
 
-Gaussianfilter.m - smooth the waveform
+Gaussianfilter.m - smoothing the return waveform
 
 initial_parameter_estimation.m - estimate the initial parameters for least squares
 
