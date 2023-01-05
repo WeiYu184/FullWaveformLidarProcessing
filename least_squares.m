@@ -1,15 +1,15 @@
-% ×îĞ¡¶ş³Ë·¨ÄâºÏ
+% æœ€å°äºŒä¹˜æ³•æ‹Ÿåˆ
 r11_filted = xlsread('r11_filted.xlsx');
 in_peak = xlsread('findpeak.xlsx','n_peak');
 il_peak = xlsread('findpeak.xlsx','l_peak');
 ipeaks = xlsread('findpeak.xlsx','peaks');
 isigmas = xlsread('findpeak.xlsx','sigmas');
 % Tn = xlsread('E:\wave33\Gaussian\mN.xlsx');
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% ½¨Á¢¾ØÕó£¬´æ´¢²ÎÊı¼ÆËãÖµºÍÖĞ¼äÁ¿
-para = zeros(18,871);   % ²ÎÊıÖµ
-ca_res = zeros(800,871); % º¯ÊıÖµÆ«ÒÆÁ¿ y - f(p,x)
-iterations = zeros(1,871); % µü´ú´ÎÊı
-r11_f = zeros(800,871); % ´¦ÀíºóµÄ²¨ĞÎ
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% å»ºç«‹çŸ©é˜µï¼Œå­˜å‚¨å‚æ•°è®¡ç®—å€¼å’Œä¸­é—´é‡
+para = zeros(18,871);   % å‚æ•°å€¼
+ca_res = zeros(800,871); % å‡½æ•°å€¼åç§»é‡ y - f(p,x)
+iterations = zeros(1,871); % è¿­ä»£æ¬¡æ•°
+r11_f = zeros(800,871); % å¤„ç†åçš„æ³¢å½¢
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TN = zeros(1,871);
 Tn = zeros(1,871);
@@ -28,21 +28,21 @@ for j=1:871
 end
 
 
-TN0=(TN~=0);           % ·Ç0µÄÎ»ÖÃ
-TNnum0 = sum(TN0(:));  % ·Ç0µÄ¸öÊı
-TN(TN==0) = [];        % È¥µô0
+TN0=(TN~=0);           % é0çš„ä½ç½®
+TNnum0 = sum(TN0(:));  % é0çš„ä¸ªæ•°
+TN(TN==0) = [];        % å»æ‰0
 TN=sum(TN)/TNnum0;
 xlswrite('TN.xlsx',TN);
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% ×îĞ¡¶ş³ËÄâºÏ
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% æœ€å°äºŒä¹˜æ‹Ÿåˆ
 for j=1:871
 %    Tn(j) = 1.5555e-07;
     Tn(j) = TN;
     if in_peak(:,j) == 0
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    elseif in_peak(:,j) == 6 % ¶ÔÁù¸ö·ÖÁ¿
+    elseif in_peak(:,j) == 6 % å¯¹å…­ä¸ªåˆ†é‡
         y = r11_filted(:,j);
         x=1:800;x=x';
-        p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j) ipeaks(4,j) il_peak(4,j) isigmas(4,j) ipeaks(5,j) il_peak(5,j) isigmas(5,j)  ipeaks(6,j) il_peak(6,j) isigmas(6,j)]; % Î»ÖÃ Õñ·ù Âö¿í³õÊ¼Öµ
+        p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j) ipeaks(4,j) il_peak(4,j) isigmas(4,j) ipeaks(5,j) il_peak(5,j) isigmas(5,j)  ipeaks(6,j) il_peak(6,j) isigmas(6,j)]; % ä½ç½® æŒ¯å¹… è„‰å®½åˆå§‹å€¼
         f=@(p,x)( p(1).* exp(-(x-p(2)).^2./(2.*p(3).^2))+p(4).* exp(-(x-p(5)).^2./(2.*p(6).^2))+p(7).* exp(-(x-p(8)).^2./(2.*p(9).^2)) + p(10).* exp(-(x-p(11)).^2./(2.*p(12).^2)) + p(13).* exp(-(x-p(14)).^2./(2.*p(15).^2)) + p(16).* exp(-(x-p(17)).^2./(2.*p(18).^2)));
         
         [p,~,~,output] = fminsearch(@(p)sum((y-f(p,x)).*(y-f(p,x))),p0,optimset('MaxIter',10000000,'MaxFunEvals',10000000));
@@ -51,7 +51,7 @@ for j=1:871
         res = y - f(p,x);
         ca_res(:,j)=res;
         r11_f(:,j)= f(p,x);
-        % ÏŞÖÆÌõ¼ş£º
+        % é™åˆ¶æ¡ä»¶ï¼š
         if abs(para(5,j)-para(2,j))<6 || abs(para(8,j)-para(5,j))<6 || abs(para(11,j)-para(8,j))<6 ||  abs(para(14,j)-para(11,j))<6 || abs(para(17,j)-para(14,j))<6 || abs(para(8,j)-para(2,j))<6 || abs(para(14,j)-para(8,j))<6 || abs(para(11,j)-para(5,j))<6
              para(:,j)=zeros(18,1);
              in_peak(:,j) = 5;
@@ -75,10 +75,10 @@ for j=1:871
             para(16,j)=0; para(17,j)=0; para(18,j)=0;
         end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
-    elseif in_peak(:,j) == 5 % ¶ÔÎå¸ö·ÖÁ¿
+    elseif in_peak(:,j) == 5 % å¯¹äº”ä¸ªåˆ†é‡
         y = r11_filted(:,j);
         x=1:800;x=x';
-        p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j) ipeaks(4,j) il_peak(4,j) isigmas(4,j) ipeaks(5,j) il_peak(5,j) isigmas(5,j)]; % Î»ÖÃ Õñ·ù Âö¿í³õÊ¼Öµ
+        p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j) ipeaks(4,j) il_peak(4,j) isigmas(4,j) ipeaks(5,j) il_peak(5,j) isigmas(5,j)]; % ä½ç½® æŒ¯å¹… è„‰å®½åˆå§‹å€¼
         f=@(p,x)( p(1).* exp(-(x-p(2)).^2./(2.*p(3).^2))+p(4).* exp(-(x-p(5)).^2./(2.*p(6).^2))+p(7).* exp(-(x-p(8)).^2./(2.*p(9).^2)) + p(10).* exp(-(x-p(11)).^2./(2.*p(12).^2)) + p(13).* exp(-(x-p(14)).^2./(2.*p(15).^2)));
         
         [p,~,~,output] = fminsearch(@(p)sum((y-f(p,x)).*(y-f(p,x))),p0,optimset('MaxIter',10000000,'MaxFunEvals',10000000));
@@ -87,7 +87,7 @@ for j=1:871
         res = y - f(p,x);
         ca_res(:,j)=res; 
         r11_f(:,j)= f(p,x);
-        % ÏŞÖÆÌõ¼ş£º
+        % é™åˆ¶æ¡ä»¶ï¼š
         if abs(para(5,j)-para(2,j))<6 || abs(para(8,j)-para(5,j))<6 || abs(para(11,j)-para(8,j))<6 ||  abs(para(14,j)-para(11,j))<6 || abs(para(8,j)-para(2,j))<6 || abs(para(14,j)-para(8,j))<6 || abs(para(11,j)-para(5,j))<6
              para(:,j)=zeros(18,1);
              in_peak(:,j) = 4;
@@ -108,10 +108,10 @@ for j=1:871
             para(13,j)=0; para(14,j)=0; para(15,j)=0;
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    elseif in_peak(:,j)== 4 % ¶ÔËÄ¸ö·ÖÁ¿
+    elseif in_peak(:,j)== 4 % å¯¹å››ä¸ªåˆ†é‡
         y = r11_filted(:,j);
         x=1:800;x=x';
-        p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j) ipeaks(4,j) il_peak(4,j) isigmas(4,j)]; % Î»ÖÃ Õñ·ù Âö¿í³õÊ¼Öµ
+        p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j) ipeaks(4,j) il_peak(4,j) isigmas(4,j)]; % ä½ç½® æŒ¯å¹… è„‰å®½åˆå§‹å€¼
         f=@(p,x)( p(1).* exp(-(x-p(2)).^2./(2.*p(3).^2))+p(4).* exp(-(x-p(5)).^2./(2.*p(6).^2))+p(7).* exp(-(x-p(8)).^2./(2.*p(9).^2)) + p(10).* exp(-(x-p(11)).^2./(2.*p(12).^2)));
         
         [p,~,~,output] = fminsearch(@(p)sum((y-f(p,x)).*(y-f(p,x))),p0,optimset('MaxIter',10000000,'MaxFunEvals',10000000));
@@ -120,7 +120,7 @@ for j=1:871
         res = y - f(p,x);
         ca_res(:,j)=res;   
         r11_f(:,j)= f(p,x);
-        % ÏŞÖÆÌõ¼ş£º
+        % é™åˆ¶æ¡ä»¶ï¼š
         if abs(para(5,j)-para(2,j))<6 || abs(para(8,j)-para(5,j))<6 || abs(para(11,j)-para(8,j))<6 || abs(para(8,j)-para(2,j))<6 || abs(para(11,j)-para(5,j))<6 || abs(para(11,j)-para(2,j))<6
              para(:,j)=zeros(18,1);
              in_peak(:,j) = 3;
@@ -138,10 +138,10 @@ for j=1:871
             para(10,j)=0; para(11,j)=0; para(12,j)=0;
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    elseif in_peak(:,j) == 3 % ¶ÔÈı¸ö·ÖÁ¿
+    elseif in_peak(:,j) == 3 % å¯¹ä¸‰ä¸ªåˆ†é‡
         y = r11_filted(:,j);
         x=1:800;x=x';
-        p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j)]; % Î»ÖÃ Õñ·ù Âö¿í³õÊ¼Öµ
+        p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j)];
         f=@(p,x)( p(1).* exp(-(x-p(2)).^2./(2.*p(3).^2))+p(4).* exp(-(x-p(5)).^2./(2.*p(6).^2))+p(7).* exp(-(x-p(8)).^2./(2.*p(9).^2)));
         [p,~,~,output] = fminsearch(@(p)sum((y-f(p,x)).*(y-f(p,x))),p0,optimset('MaxIter',10000000,'MaxFunEvals',10000000));
         para(:,j)=[p,0,0,0,0,0,0,0,0,0]';
@@ -149,7 +149,7 @@ for j=1:871
         res = y - f(p,x);
         ca_res(:,j)=res; 
         r11_f(:,j)= f(p,x);
-        % ÏŞÖÆÌõ¼ş£º
+        % é™åˆ¶æ¡ä»¶ï¼š
         if abs(para(5,j)-para(2,j))<6 || abs(para(8,j)-para(5,j))<6 || abs(para(8,j)-para(2,j))<6
              para(:,j)=zeros(18,1);
              in_peak(:,j) = 2;
@@ -164,10 +164,10 @@ for j=1:871
             para(7,j)=0; para(8,j)=0; para(9,j)=0;
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    elseif in_peak(:,j) == 2 % ¶ÔÁ½¸ö·ÖÁ¿
+    elseif in_peak(:,j) == 2 % å¯¹ä¸¤ä¸ªåˆ†é‡
         y = r11_filted(:,j);
         x=1:800;x=x';
-        p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j)]; % Õñ·ù Î»ÖÃ Âö¿í³õÊ¼Öµ
+        p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j)]; % æŒ¯å¹… ä½ç½® è„‰å®½åˆå§‹å€¼
         f=@(p,x)(p(1).* exp(-(x-p(2)).^2./(2.*p(3).^2))+p(4).* exp(-(x-p(5)).^2./(2.*p(6).^2)));
         
         [p,~,~,output] = fminsearch(@(p)sum((y-f(p,x)).*(y-f(p,x))),p0,optimset('MaxIter',10000000,'MaxFunEvals',10000000));
@@ -189,10 +189,10 @@ for j=1:871
             para(4,j)=0; para(5,j)=0; para(6,j)=0;
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    elseif in_peak(:,j) == 1 % ¶ÔÒ»¸ö·ÖÁ¿
+    elseif in_peak(:,j) == 1 % å¯¹ä¸€ä¸ªåˆ†é‡
         y = r11_filted(:,j);
         x=1:800;x=x';
-        p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j)]; % Õñ·ù Î»ÖÃ Âö¿íµÄ³õÊ¼Öµ
+        p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j)]; % æŒ¯å¹… ä½ç½® è„‰å®½çš„åˆå§‹å€¼
         f=@(p,x)p(1).* exp(-(x-p(2)).^2./(2.*p(3).^2));
         [p,~,~,output] = fminsearch(@(p)sum((y-f(p,x)).*(y-f(p,x))),p0,optimset('MaxIter',10000000,'MaxFunEvals',10000000));
         para(:,j)=[p,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]';
@@ -200,15 +200,15 @@ for j=1:871
         res = y - f(p,x);
         ca_res(:,j)=res;
         r11_f(:,j)= f(p,x);
-        % ÏŞÖÆÌõ¼ş1
+        % é™åˆ¶æ¡ä»¶1
         if  para(1,j) < Tn(j) || para(2,j) < 0 ||  para(2,j) > 800 || para(3,j) < 2
             para(:,j)=zeros(18,1);
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %elseif in_peak(:,j) == 2 % ¶ÔÁ½¸ö·ÖÁ¿
+    %elseif in_peak(:,j) == 2 % å¯¹ä¸¤ä¸ªåˆ†é‡
     %    y = r11_filted(:,j);
     %    x=1:800;x=x';
-    %   p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j)]; % Õñ·ù Î»ÖÃ Âö¿í³õÊ¼Öµ
+    %   p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j)]; % æŒ¯å¹… ä½ç½® è„‰å®½åˆå§‹å€¼
 %         f=@(p,x)(p(1).* exp(-(x-p(2)).^2./(2.*p(3).^2))+p(4).* exp(-(x-p(5)).^2./(2.*p(6).^2)));
 %         
 %         [p,~,~,output] = fminsearch(@(p)sum((y-f(p,x)).*(y-f(p,x))),p0,optimset('MaxIter',10000000,'MaxFunEvals',10000000));
@@ -227,10 +227,10 @@ for j=1:871
 %              in_peak(:,j) = 1;
 %          end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     elseif in_peak(:,j) == 3 % ¶ÔÈı¸ö·ÖÁ¿
+%     elseif in_peak(:,j) == 3 % å¯¹ä¸‰ä¸ªåˆ†é‡
 %         y = r11_filted(:,j);
 %         x=1:800;x=x';
-%         p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j)]; % Î»ÖÃ Õñ·ù Âö¿í³õÊ¼Öµ
+%         p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j)]; % ä½ç½® æŒ¯å¹… è„‰å®½åˆå§‹å€¼
 %         f=@(p,x)( p(1).* exp(-(x-p(2)).^2./(2.*p(3).^2))+p(4).* exp(-(x-p(5)).^2./(2.*p(6).^2))+p(7).* exp(-(x-p(8)).^2./(2.*p(9).^2)));
 %         [p,~,~,output] = fminsearch(@(p)sum((y-f(p,x)).*(y-f(p,x))),p0,optimset('MaxIter',10000000,'MaxFunEvals',10000000));
 %         para(:,j)=[p,0,0,0,0,0,0,0,0,0]';
@@ -238,10 +238,10 @@ for j=1:871
 %         res = y - f(p,x);
 %         ca_res(:,j)=res;     
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     elseif in_peak(:,j)== 4 % ¶ÔËÄ¸ö·ÖÁ¿
+%     elseif in_peak(:,j)== 4 % å¯¹å››ä¸ªåˆ†é‡
 %         y = r11_filted(:,j);
 %         x=1:800;x=x';
-%         p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j) ipeaks(4,j) il_peak(4,j) isigmas(4,j)]; % Î»ÖÃ Õñ·ù Âö¿í³õÊ¼Öµ
+%         p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j) ipeaks(4,j) il_peak(4,j) isigmas(4,j)]; % ä½ç½® æŒ¯å¹… è„‰å®½åˆå§‹å€¼
 %         f=@(p,x)( p(1).* exp(-(x-p(2)).^2./(2.*p(3).^2))+p(4).* exp(-(x-p(5)).^2./(2.*p(6).^2))+p(7).* exp(-(x-p(8)).^2./(2.*p(9).^2)) + p(10).* exp(-(x-p(11)).^2./(2.*p(12).^2)));
 %         
 %         [p,~,~,output] = fminsearch(@(p)sum((y-f(p,x)).*(y-f(p,x))),p0,optimset('MaxIter',10000000,'MaxFunEvals',10000000));
@@ -250,10 +250,10 @@ for j=1:871
 %         res = y - f(p,x);
 %         ca_res(:,j)=res;     
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     elseif in_peak(:,j) == 5 % ¶ÔÎå¸ö·ÖÁ¿
+%     elseif in_peak(:,j) == 5 % å¯¹äº”ä¸ªåˆ†é‡
 %         y = r11_filted(:,j);
 %         x=1:800;x=x';
-%         p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j) ipeaks(4,j) il_peak(4,j) isigmas(4,j) ipeaks(5,j) il_peak(5,j) isigmas(5,j)]; % Î»ÖÃ Õñ·ù Âö¿í³õÊ¼Öµ
+%         p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j) ipeaks(4,j) il_peak(4,j) isigmas(4,j) ipeaks(5,j) il_peak(5,j) isigmas(5,j)]; % ä½ç½® æŒ¯å¹… è„‰å®½åˆå§‹å€¼
 %         f=@(p,x)( p(1).* exp(-(x-p(2)).^2./(2.*p(3).^2))+p(4).* exp(-(x-p(5)).^2./(2.*p(6).^2))+p(7).* exp(-(x-p(8)).^2./(2.*p(9).^2)) + p(10).* exp(-(x-p(11)).^2./(2.*p(12).^2)) + p(13).* exp(-(x-p(14)).^2./(2.*p(15).^2)));
 %         
 %         [p,~,~,output] = fminsearch(@(p)sum((y-f(p,x)).*(y-f(p,x))),p0,optimset('MaxIter',10000000,'MaxFunEvals',10000000));
@@ -262,10 +262,10 @@ for j=1:871
 %         res = y - f(p,x);
 %         ca_res(:,j)=res;     
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%     elseif in_peak(:,j) == 6 % ¶ÔÁù¸ö·ÖÁ¿
+%     elseif in_peak(:,j) == 6 % å¯¹å…­ä¸ªåˆ†é‡
 %         y = r11_filted(:,j);
 %         x=1:800;x=x';
-%         p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j) ipeaks(4,j) il_peak(4,j) isigmas(4,j) ipeaks(5,j) il_peak(5,j) isigmas(5,j)  ipeaks(6,j) il_peak(6,j) isigmas(6,j)]; % Î»ÖÃ Õñ·ù Âö¿í³õÊ¼Öµ
+%         p0=[ipeaks(1,j) il_peak(1,j) isigmas(1,j) ipeaks(2,j) il_peak(2,j) isigmas(2,j) ipeaks(3,j) il_peak(3,j) isigmas(3,j) ipeaks(4,j) il_peak(4,j) isigmas(4,j) ipeaks(5,j) il_peak(5,j) isigmas(5,j)  ipeaks(6,j) il_peak(6,j) isigmas(6,j)]; % ä½ç½® æŒ¯å¹… è„‰å®½åˆå§‹å€¼
 %         f=@(p,x)( p(1).* exp(-(x-p(2)).^2./(2.*p(3).^2))+p(4).* exp(-(x-p(5)).^2./(2.*p(6).^2))+p(7).* exp(-(x-p(8)).^2./(2.*p(9).^2)) + p(10).* exp(-(x-p(11)).^2./(2.*p(12).^2)) + p(13).* exp(-(x-p(14)).^2./(2.*p(15).^2)) + p(16).* exp(-(x-p(17)).^2./(2.*p(18).^2)));
 %         
 %         [p,~,~,output] = fminsearch(@(p)sum((y-f(p,x)).*(y-f(p,x))),p0,optimset('MaxIter',10000000,'MaxFunEvals',10000000));
@@ -281,8 +281,8 @@ end
 
 n_peaks = zeros(1,187);
 for j=1:871
-    no0=(para(:,j)~=0);   % ·Ç0µÄÎ»ÖÃ
-    paranum = sum(no0(:));  % ·Ç0µÄ¸öÊı
+    no0=(para(:,j)~=0);   % é0çš„ä½ç½®
+    paranum = sum(no0(:));  % é0çš„ä¸ªæ•°
     n_peaks(j) = paranum/3;
 end
 xlswrite('least_squares.xlsx',para,'para');
