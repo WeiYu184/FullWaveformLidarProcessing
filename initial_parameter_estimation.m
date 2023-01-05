@@ -1,12 +1,12 @@
-% ³õÊ¼²ÎÊı¹À¼Æ
+% åˆå§‹å‚æ•°ä¼°è®¡
 r11_filted=xlsread('r11_filted.xlsx');
-n_peak=zeros(1,871);   %·åÖµÊıÁ¿
-l_peak=zeros(6,871); %·åÖµÎ»ÖÃ
-peaks=zeros(6,871);  %·åÖµ´óĞ¡
-sigmas=zeros(6,871);  %Âö¿í
+n_peak=zeros(1,871);   %å³°å€¼æ•°é‡
+l_peak=zeros(6,871); %å³°å€¼ä½ç½®
+peaks=zeros(6,871);  %å³°å€¼å¤§å°
+sigmas=zeros(6,871);  %è„‰å®½
 for j=1:871 % for each waveform
-    for i=1:800-4 % ±éÀúËÑË÷
-        win=[r11_filted(i,j) r11_filted(i+1,j) r11_filted(i+2,j) r11_filted(i+3,j) r11_filted(i+4,j)]; %ËÑË÷´°
+    for i=1:800-4 % éå†æœç´¢
+        win=[r11_filted(i,j) r11_filted(i+1,j) r11_filted(i+2,j) r11_filted(i+3,j) r11_filted(i+4,j)]; % creating a searching window
         if (max(win) == r11_filted(i+2,j)) && (min(win) < r11_filted(i+2,j))
             n_peak(1,j)=n_peak(1,j)+1;
             n=n_peak(1,j);
@@ -21,7 +21,7 @@ for j=1:871 % for each waveform
      end
 end
 
-% ºÏ²¢¼ä¸ôĞ¡ÓÚ10µÄ·åÖµ
+% åˆå¹¶é—´éš”å°äº10çš„å³°å€¼
 for j=1:871
     for i=1:5
         if (l_peak(i+1,j)-l_peak(i,j))<10 && (l_peak(i+1,j)-l_peak(i,j))>0
@@ -32,20 +32,20 @@ for j=1:871
             peaks(i,j)=0;          
         end        
     end
-    % È¥³ıÖĞ¼äµÄ0²¢ÔÚÄ©Î²²¹0
+    % å»é™¤ä¸­é—´çš„0å¹¶åœ¨æœ«å°¾è¡¥0
     a= peaks(:,j);
-    a0=(a==0);           % 0µÄÎ»ÖÃ
-    anum0 = sum(a0(:));  % 0µÄ¸öÊı
-    a(a==0) = [];        % È¥µô0
-    peaks(:,j) =[a;zeros(anum0,1)]; % Ä©Î²²¹0
+    a0=(a==0);           % 0çš„ä½ç½®
+    anum0 = sum(a0(:));  % 0çš„ä¸ªæ•°
+    a(a==0) = [];        % å»æ‰0
+    peaks(:,j) =[a;zeros(anum0,1)]; % æœ«å°¾è¡¥0
     b= l_peak(:,j);
-    b0=(b==0);           % 0µÄÎ»ÖÃ
-    bnum0 = sum(b0(:));  % 0µÄ¸öÊı
-    b(b==0) = [];        % È¥µô0
-    l_peak(:,j) =[b;zeros(bnum0,1)]; % Ä©Î²²¹0
+    b0=(b==0);           % 0çš„ä½ç½®
+    bnum0 = sum(b0(:));  % 0çš„ä¸ªæ•°
+    b(b==0) = [];        % å»æ‰0
+    l_peak(:,j) =[b;zeros(bnum0,1)]; % æœ«å°¾è¡¥0
 end
 
-% ÇóÂö¿í
+% æ±‚è„‰å®½
 pmax = max(peaks);
 for j=1:871
     if n_peak(1,j) == 0
@@ -70,7 +70,7 @@ xlswrite('findpeak.xlsx',l_peak,'l_peak');
 xlswrite('findpeak.xlsx',peaks,'peaks');
 xlswrite('findpeak.xlsx',sigmas,'sigmas');
 
-%»æÍ¼
+%ç»˜å›¾
 x = 1:1:800;
 y = exp(-(x-184).*(x-184)/(2.*15.5.*15.5)).*0.0029;
 plot(x,y);
